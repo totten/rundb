@@ -17,6 +17,7 @@ cd qdb
 
 * `master/conf/my.cnf.tmpl`: Configuration file for master DB
 * `slave/conf/my.cnf.tmpl`: Configuration file for slave DB
+* `common/conf/my.cnf`: Configuration elements shared by master and slave DB
 
 ## Quick Commands
 
@@ -53,3 +54,12 @@ me@localhost:~/src/qdb$ nix-shell -A slave
 mysql  Ver 15.1 Distrib 10.2.17-MariaDB, for osx10.13 (x86_64) using readline 5.1
 [nix-shell:~/src/qdb]$
 ```
+
+## Connection Credentials
+
+| Instance    | IP           | Port      | Root User   | Root Password |
+|-------------|--------------|-----------|-------------|---------------|
+| `master`    | `127.0.0.1`  | `3330`    | `root`      |               |
+| `slave`     | `127.0.0.1`  | `3331`    | `root`      |               |
+
+This is horrifically insecure by default. It's only for internal/local development.

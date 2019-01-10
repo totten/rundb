@@ -36,7 +36,11 @@ function cmd_init() {
     echo_step "Create base folder ($MYSQL_BASE)"
     mkdir -p "$MYSQL_BASE" "$MYSQL_BASE/conf" "$MYSQL_BASE/tmp" "$MYSQL_BASE/data" "$MYSQL_BASE/log"
     echo_step "Generate my.cnf from template"
-    sed "s;%%MYSQL_BASE%%;$MYSQL_BASE;g" < "$MYSQL_BASE/conf/my.cnf.tmpl" > "$MYSQL_BASE/conf/my.cnf"
+    local COMMON=$(dirname $MYSQL_BASE)/common
+    cat "$MYSQL_BASE/conf/my.cnf.tmpl" \
+      | sed "s;%%MYSQL_BASE%%;$MYSQL_BASE;g" \
+      | sed "s;%%COMMON%%;$COMMON;g" \
+      > "$MYSQL_BASE/conf/my.cnf"
     if [ ! -f "$MYSQL_BASE/data/ibdata1" ]; then
       echo_step "Initialize data files"
       local mysql_bin=$(dirname $(which mysqld))
