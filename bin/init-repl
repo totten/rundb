@@ -53,4 +53,12 @@ $changeMaster->execute();
 
 $slave->exec('START SLAVE');
 
+$master->exec("UNLOCK TABLES");
+
+echo "Create user \"reader\"\n";
+$master->exec("CREATE USER IF NOT EXISTS 'reader'@'127.0.0.1' IDENTIFIED BY ''");
+$master->exec("CREATE USER IF NOT EXISTS 'reader'@'localhost' IDENTIFIED BY ''");
+$master->exec("GRANT SELECT, CREATE TEMPORARY TABLES ON *.* TO  'reader'@'127.0.0.1'");
+$master->exec("GRANT SELECT, CREATE TEMPORARY TABLES ON *.* TO  'reader'@'localhost'");
+
 echo "Done\n";
