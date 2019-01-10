@@ -22,10 +22,10 @@ cd qdb
 
 ```
 ## Start master DB in foreground. To stop it, press Ctrl-\
-nix-shell -A master --command 'qdb run'
+nix-shell -A master --command qdb
 
 ## Start slave DB in foreground. To stop it, press Ctrl-\
-nix-shell -A slave --command 'qdb run'
+nix-shell -A slave --command qdb
 
 ## Destroy all state files from master DB.
 nix-shell -A master --command 'qdb clear'

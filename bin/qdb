@@ -12,7 +12,15 @@ function echo_error() {
 
 function cmd_help() {
   PROG=$(basename "$0")
-  echo "usage: $PROG <init|run|clear>"
+  echo "usage: $PROG <action>..."
+  echo
+  echo "Actions:"
+  echo " - help: Show this help screen"
+  echo " - init: Create data files/folders"
+  echo " - run: Start MySQL daemon in foreground."
+  echo " - clear: Destroy any data files/folders"
+  echo
+  echo "If no action is provided, then default to \"$PROG init run\""
 }
 
 function cmd_clear() {
@@ -49,6 +57,22 @@ function cmd_run() {
   set +ex
 }
 
+function main() {
+  while [ -n "$1" ]; do
+    arg="$1"
+    shift
+
+    case "$arg" in
+      init) cmd_init ;;
+      clear) cmd_clear ;;
+      run) cmd_init ; cmd_run ;;
+      help|--help|-h) cmd_help ;;
+      *) echo_error "Unrecognized argument: $arg"; cmd_help ; exit 1 ;;
+    esac
+
+  done
+}
+
 #################################################
 ## Main
 
@@ -58,16 +82,8 @@ if [ -z "$MYSQL_BASE" ]; then
 fi
 export MYSQL_HOME="$MYSQL_BASE/conf"
 
-while [ -n "$1" ]; do
-  arg="$1"
-  shift
-  
-  case "$arg" in
-    init) cmd_init ;;
-    clear) cmd_clear ;;
-    run) cmd_init ; cmd_run ;; 
-    help|--help|-h) cmd_help ;;
-    *) echo_error "Unrecognized argument: $arg"; cmd_help ; exit 1 ;;
-  esac
-
-done
+if [ -z "$1" ]; then
+  main init run
+else
+  main "$@"
+fi
