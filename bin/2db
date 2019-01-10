@@ -1,0 +1,72 @@
+#!/bin/bash
+
+#################################################
+
+function echo_step() {
+  echo "[[ $@ ]]"
+}
+
+function echo_error() {
+  echo "Error: $@" >&2
+}
+
+function cmd_help() {
+  echo "usage: 2db <init|run|clear>"
+}
+
+function cmd_clear() {
+  for ITEM in data log tmp mysql.sock ; do
+    if [ -e "$MYSQL_BASE/$ITEM" ]; then
+      echo_step "Remove $MYSQL_BASE/$ITEM"
+      rm -rf "$MYSQL_BASE/$ITEM"
+    fi
+  done
+}
+
+function cmd_init() {
+    echo_step "Create base folder ($MYSQL_BASE)"
+    mkdir -p "$MYSQL_BASE" "$MYSQL_BASE/conf" "$MYSQL_BASE/tmp" "$MYSQL_BASE/data" "$MYSQL_BASE/log"
+    echo_step "Generate my.cnf from template"
+    sed "s;%%MYSQL_BASE%%;$MYSQL_BASE;g" < "$MYSQL_BASE/conf/my.cnf.tmpl" > "$MYSQL_BASE/conf/my.cnf"
+    if [ ! -f "$MYSQL_BASE/data/ibdata1" ]; then
+      echo_step "Initialize data files"
+      local mysql_bin=$(dirname $(which mysqld))
+      local mysql_base=$(dirname "$mysql_bin")
+      pushd "$mysql_base"
+        set -ex
+          mysql_install_db --datadir="$MYSQL_BASE/data" --defaults-file="$MYSQL_BASE/conf/my.cnf" --skip-name-resolve
+        set +ex
+      popd
+    fi
+}
+
+
+function cmd_run() {
+  echo_step "Starting mysqld. To shutdown, press CTRL-\\"
+  set -ex
+    mysqld --datadir="$MYSQL_BASE/data"
+  set +ex
+}
+
+#################################################
+## Main
+
+if [ -z "$MYSQL_BASE" ]; then
+  echo_error "MYSQL_BASE has not been set"
+  exit 1
+fi
+export MYSQL_HOME="$MYSQL_BASE/conf"
+
+while [ -n "$1" ]; do
+  arg="$1"
+  shift
+  
+  case "$arg" in
+    init) cmd_init ;;
+    clear) cmd_clear ;;
+    run) cmd_init ; cmd_run ;; 
+    help|--help|-h) cmd_help ;;
+    *) echo_error "Unrecognized argument: $arg"; cmd_help ; exit 1 ;;
+  esac
+
+done

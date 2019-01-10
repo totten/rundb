@@ -1,0 +1,8 @@
+/master/conf/my.cnf
+/master/data
+/master/tmp
+/master/log
+/slave/conf/my.cnf
+/slave/data
+/slave/tmp
+/slave/log
