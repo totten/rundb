@@ -28,6 +28,12 @@ nix-shell -A master --command rundb
 ## Start slave DB in foreground. To stop it, press Ctrl-\
 nix-shell -A slave --command rundb
 
+## Connect to master via CLI
+nix-shell -A master --command mysql
+
+## Connect to slave via CLI
+nix-shell -A slave --command mysql
+
 ## Destroy all state files from master DB.
 nix-shell -A master --command 'rundb clear'
 
