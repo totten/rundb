@@ -1,5 +1,7 @@
 #!/bin/bash
 
+MYSQLD_OPTIONS=
+
 #################################################
 
 function echo_step() {
@@ -13,7 +15,7 @@ function echo_error() {
 function cmd_help() {
   PROG=$(basename "$0")
   echo "about: Initialize and execute MySQL/MariaDB"
-  echo "usage: $PROG [<action> [<action>...]]"
+  echo "usage: $PROG [options] [actions]"
   echo
   echo "Actions:"
   echo " - help: Show this help screen"
@@ -21,7 +23,16 @@ function cmd_help() {
   echo " - run: Start MySQL daemon in foreground."
   echo " - clear: Destroy any data files/folders"
   echo
-  echo "If no action is provided, then default to \"$PROG init run\""
+  echo "If no actions are listed, then the default is to \"init\" and \"run\"."
+  echo "Any unrecognized options will be passed-through to mysqld."
+  echo
+  echo "Examples:"
+  echo "  $PROG"
+  echo "  $PROG --bind-address=* --port=3999"
+  echo "  $PROG init"
+  echo "  $PROG clear init"
+  echo "  $PROG init run"
+  echo "  $PROG clear init run --bind-address=* --port=3999"
 }
 
 function cmd_clear() {
@@ -58,24 +69,30 @@ function cmd_init() {
 function cmd_run() {
   echo_step "Starting mysqld. To shutdown, press CTRL-\\"
   set -ex
-    mysqld --datadir="$MYSQL_BASE/data"
+    mysqld --datadir="$MYSQL_BASE/data" $MYSQLD_OPTIONS
   set +ex
 }
 
 function main() {
+  local has_actions=
+
   while [ -n "$1" ]; do
     arg="$1"
     shift
 
     case "$arg" in
-      init) cmd_init ;;
-      clear) cmd_clear ;;
-      run) cmd_init ; cmd_run ;;
-      help|--help|-h) cmd_help ;;
-      *) echo_error "Unrecognized argument: $arg"; cmd_help ; exit 1 ;;
+      init)			has_actions=1; cmd_init ;;
+      clear)			has_actions=1; cmd_clear ;;
+      run)			has_actions=1; cmd_run ;;
+      help|--help|-h)		has_actions=1; cmd_help ;;
+      *)			MYSQLD_OPTIONS="$MYSQLD_OPTIONS $arg" ;;
     esac
-
   done
+
+  if [ -z "$has_actions" ]; then
+    cmd_init
+    cmd_run
+  fi
 }
 
 #################################################
@@ -86,9 +103,4 @@ if [ -z "$MYSQL_BASE" ]; then
   exit 1
 fi
 export MYSQL_HOME="$MYSQL_BASE/conf"
-
-if [ -z "$1" ]; then
-  main init run
-else
-  main "$@"
-fi
+main "$@"
