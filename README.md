@@ -29,6 +29,7 @@ This is horrifically insecure by default. It's only for internal/local developme
 
 ## General Design
 
+* This repo is basically a couple of `my.cnf` files with a helper script.
 * The folders `./master` and `./slave` store all config files and data files for the master and slave instances.
 * The `rundb` command is a smaller wrapper for `mysql_install_db` and `mysqld` which auto-initializes config files and data files.
 * The command `nix-shell -A <dbname>` (e.g. `nix-shell -A master` or `nix-shell -A slave`) sets up environment variables and
@@ -49,7 +50,7 @@ nix-shell -A master --command 'mysqldump foo'
 ## Destroy all state files from master DB.
 nix-shell -A master --command 'rundb clear'
 
-## Clear out all master data files. Reinitialize and run DB in foreground. Bind to a different IP.
+## Clear out all master data files. Reinitialize. Run DB in foreground with a different IP.
 ## To stop, press Ctrl-\
 nix-shell -A master --command 'rundb clear init run --bind-address=192.168.1.10'
 ```
@@ -69,7 +70,7 @@ nix-shell -A slave --command 'mysqldump foo'
 ## Destroy all state files from slave DB.
 nix-shell -A slave --command 'rundb clear'
 
-## Clear out all slave data files. Reinitialize and run DB in foreground. Bind to a different IP.
+## Clear out all slave data files. Reinitialize. Run DB in foreground with a different IP.
 ## To stop, press Ctrl-\
 nix-shell -A slave --command 'rundb clear init run --bind-address=192.168.1.11'
 ```
