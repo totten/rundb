@@ -49,7 +49,8 @@ nix-shell -A master --command 'mysqldump foo'
 ## Destroy all state files from master DB.
 nix-shell -A master --command 'rundb clear'
 
-## Clear out all master data files. Reinitialize and run DB in foreground. Bind to a different IP. To stop, press Ctrl-\
+## Clear out all master data files. Reinitialize and run DB in foreground. Bind to a different IP.
+## To stop, press Ctrl-\
 nix-shell -A master --command 'rundb clear init run --bind-address=192.168.1.10'
 ```
 
@@ -68,7 +69,8 @@ nix-shell -A slave --command 'mysqldump foo'
 ## Destroy all state files from slave DB.
 nix-shell -A slave --command 'rundb clear'
 
-## Clear out all slave data files. Reinitialize and run DB in foreground. Bind to a different IP. To stop, press Ctrl-\
+## Clear out all slave data files. Reinitialize and run DB in foreground. Bind to a different IP.
+## To stop, press Ctrl-\
 nix-shell -A slave --command 'rundb clear init run --bind-address=192.168.1.11'
 ```
 
