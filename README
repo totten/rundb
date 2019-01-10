@@ -1,4 +1,4 @@
-# 2db: Quick-and-dirty MariaDB master-slave deployment
+# qdb: Quick-and-dirty MariaDB master-slave deployment
 
 ## Requirements
 
@@ -9,8 +9,8 @@
 ## Download
 
 ```
-git clone https://github.com/totten/2db
-cd 2db
+git clone https://github.com/totten/qdb
+cd qdb
 ```
 
 ## Configuration files
@@ -22,16 +22,16 @@ cd 2db
 
 ```
 ## Start master DB in foreground. To stop it, press Ctrl-\
-nix-shell -A master --command '2db run'
+nix-shell -A master --command 'qdb run'
 
 ## Start slave DB in foreground. To stop it, press Ctrl-\
-nix-shell -A slave --command '2db run'
+nix-shell -A slave --command 'qdb run'
 
 ## Destroy all state files from master DB.
-nix-shell -A master --command '2db clear'
+nix-shell -A master --command 'qdb clear'
 
 ## Destroy all state files from slave DB.
-nix-shell -A slave --command '2db clear'
+nix-shell -A slave --command 'qdb clear'
 ```
 
 ## Shell
@@ -39,17 +39,17 @@ nix-shell -A slave --command '2db clear'
 You can open a shell running mysql commands (`mysql`, `mysqldump`, etc) on the master instance:
 
 ```
-me@localhost:~/src/2db$ nix-shell -A master
-[nix-shell:~/src/2db]$ mysql --version
+me@localhost:~/src/qdb$ nix-shell -A master
+[nix-shell:~/src/qdb]$ mysql --version
 mysql  Ver 15.1 Distrib 10.2.17-MariaDB, for osx10.13 (x86_64) using readline 5.1
-[nix-shell:~/src/2db]$
+[nix-shell:~/src/qdb]$
 ```
 
 Similarly, for interacting with the slave instance:
 
 ```
-me@localhost:~/src/2db$ nix-shell -A slave
-[nix-shell:~/src/2db]$ mysql --version
+me@localhost:~/src/qdb$ nix-shell -A slave
+[nix-shell:~/src/qdb]$ mysql --version
 mysql  Ver 15.1 Distrib 10.2.17-MariaDB, for osx10.13 (x86_64) using readline 5.1
-[nix-shell:~/src/2db]$
+[nix-shell:~/src/qdb]$
 ```

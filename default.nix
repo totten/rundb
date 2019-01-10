@@ -6,7 +6,7 @@ let
 in rec {
 
   master = stdenv.mkDerivation rec {
-    name = "2db-master";
+    name = "qdb-master";
     bin = ./bin;
     buildInputs = [ pkgs.mariadb ];
     buildCommand = ''
@@ -20,7 +20,7 @@ in rec {
 
 
   slave =  stdenv.mkDerivation rec {
-    name = "2db-slave";
+    name = "qdb-slave";
     bin = ./bin;
     buildInputs = [ pkgs.mariadb ];
     buildCommand = ''

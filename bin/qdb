@@ -11,7 +11,8 @@ function echo_error() {
 }
 
 function cmd_help() {
-  echo "usage: 2db <init|run|clear>"
+  PROG=$(basename "$0")
+  echo "usage: $PROG <init|run|clear>"
 }
 
 function cmd_clear() {
