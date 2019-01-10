@@ -7,6 +7,8 @@ socket		= %%MYSQL_BASE%%/run/mysql.sock
 
 [mysqld]
 server-id	= 3331
+bind-address	= 127.0.0.1
+# bind-address	= *
 port		= 3331
 socket		= %%MYSQL_BASE%%/run/mysql.sock
 pid_file        = %%MYSQL_BASE%%/run/mysql.pid
