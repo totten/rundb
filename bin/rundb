@@ -24,7 +24,7 @@ function cmd_help() {
 }
 
 function cmd_clear() {
-  for ITEM in data log tmp mysql.sock ; do
+  for ITEM in data log tmp mysql.sock conf/my.cnf ; do
     if [ -e "$MYSQL_BASE/$ITEM" ]; then
       echo_step "Remove $MYSQL_BASE/$ITEM"
       rm -rf "$MYSQL_BASE/$ITEM"
