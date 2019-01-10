@@ -27,29 +27,52 @@ This is horrifically insecure by default. It's only for internal/local developme
 * [slave/conf/my.cnf.tmpl](slave/conf/my.cnf.tmpl): Configuration file for slave DB
 * [common/conf/my.cnf](common/conf/my.cnf): Configuration elements shared by master and slave DB
 
-## Quick Commands
+## General Design
+
+* The folders `./master` and `./slave` store all config files and data files for the master and slave instances.
+* The `rundb` command is a smaller wrapper for `mysql_install_db` and `mysqld` which auto-initializes config files and data files.
+* The command `nix-shell -A <dbname>` (e.g. `nix-shell -A master` or `nix-shell -A slave`) sets up environment variables and
+  (if necessary) downloads executables for a given database.  Use it to call `rundb`, `mysql`, `mysqldump`, `mysqladmin`, etc.
+
+## Quick Commands (master)
 
 ```
 ## Start master DB in foreground. To stop it, press Ctrl-\
 nix-shell -A master --command rundb
 
-## Start slave DB in foreground. To stop it, press Ctrl-\
-nix-shell -A slave --command rundb
-
 ## Connect to master via CLI
 nix-shell -A master --command mysql
 
-## Connect to slave via CLI
-nix-shell -A slave --command mysql
+## Dump master's copy of the 'foo' database
+nix-shell -A master --command 'mysqldump foo'
 
 ## Destroy all state files from master DB.
 nix-shell -A master --command 'rundb clear'
 
-## Destroy all state files from slave DB.
-nix-shell -A slave --command 'rundb clear'
+## Clear out all master data files. Reinitialize and run DB in foreground. Bind to a different IP. To stop, press Ctrl-\
+nix-shell -A master --command 'rundb clear init run --bind-address=192.168.1.10'
 ```
 
-## Shell
+## Quick Commands (slave)
+
+```
+## Start slave DB in foreground. To stop it, press Ctrl-\
+nix-shell -A slave --command rundb
+
+## Connect to slave via CLI
+nix-shell -A slave --command mysql
+
+## Dump slave's copy of the 'foo' database
+nix-shell -A slave --command 'mysqldump foo'
+
+## Destroy all state files from slave DB.
+nix-shell -A slave --command 'rundb clear'
+
+## Clear out all slave data files. Reinitialize and run DB in foreground. Bind to a different IP. To stop, press Ctrl-\
+nix-shell -A slave --command 'rundb clear init run --bind-address=192.168.1.11'
+```
+
+## Interactive Shell
 
 You can open a shell for running mysql commands on the master instance:
 
