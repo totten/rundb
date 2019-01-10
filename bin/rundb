@@ -12,7 +12,8 @@ function echo_error() {
 
 function cmd_help() {
   PROG=$(basename "$0")
-  echo "usage: $PROG <action>..."
+  echo "about: Initialize and execute MySQL/MariaDB"
+  echo "usage: $PROG [<action> [<action>...]]"
   echo
   echo "Actions:"
   echo " - help: Show this help screen"
