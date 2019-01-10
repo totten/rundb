@@ -6,7 +6,7 @@ let
   mkdbms = {dbmsName}: stdenv.mkDerivation rec {
     name = "rundb-${dbmsName}";
     bin = ./bin;
-    buildInputs = [ pkgs.mariadb ];
+    buildInputs = [ pkgs.mariadb pkgs.php72 ];
     buildCommand = ''
     '';
     shellHook = ''
