@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+DB_NAME="$1"
+
+if [ -z "$DB_NAME" ]; then
+  echo "Create or reset a database from a snapshot"
+  echo "Any existing content in rundb may be overwritten."
+  echo
+  echo "usage: $0 <db-name>"
+  echo
+  echo "example: cat data.sql | $0 newdbname"
+  exit 1
+fi
+
+mysql <<EOSQL
+    DROP DATABASE IF EXISTS $DB_NAME;
+    CREATE DATABASE $DB_NAME;
+EOSQL
+
+mysql $DB_NAME 3<&0
