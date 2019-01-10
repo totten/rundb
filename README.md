@@ -14,10 +14,10 @@ cd rundb
 
 ## Connection Credentials
 
-| Instance    | IP           | Port      | Root User   | Root Password |
-|-------------|--------------|-----------|-------------|---------------|
-| `master`    | `127.0.0.1`  | `3330`    | `root`      |               |
-| `slave`     | `127.0.0.1`  | `3331`    | `root`      |               |
+| Instance    | IP           | Port      | Root User   | Root Password | Server ID |
+|-------------|--------------|-----------|-------------|---------------|-----------|
+| `master`    | `127.0.0.1`  | `3330`    | `root`      |               | `3330`    |
+| `slave`     | `127.0.0.1`  | `3331`    | `root`      |               | `3331`    |
 
 This is horrifically insecure by default. It's only for internal/local development.
 
