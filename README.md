@@ -5,12 +5,19 @@
 * Run Linux or OS X on the local workstation
 * Install the [nix package manager](https://nixos.org/nix/)
 
-## Connection Credentials
+## Connection Details
 
-| Instance    | IP           | Port      | Root User   | Root Password | Server ID |
-|-------------|--------------|-----------|-------------|---------------|-----------|
-| `master`    | `127.0.0.1`  | `3330`    | `root`      |               | `3330`    |
-| `slave`     | `127.0.0.1`  | `3331`    | `root`      |               | `3331`    |
+| Instance    | IP           | Port      | Server ID |
+|-------------|--------------|-----------|-----------|
+| `master`    | `127.0.0.1`  | `3330`    | `3330`    |
+| `slave`     | `127.0.0.1`  | `3331`    | `3331`    |
+
+| Connect As       | DSN | CLI |
+|------------------|-----|-----|
+| Master Root      | `mysql://root:@127.0.0.1:3330/`   | `nix-shell -A master --command mysql` |
+| Master Reader    | `mysql://reader:@127.0.0.1:3330/` | `nix-shell -A master --command 'mysql -u reader'` |
+| Slave Root       | `mysql://root:@127.0.0.1:3331/`   | `nix-shell -A slave --command mysql` |
+| Slave Reader     | `mysql://reader:@127.0.0.1:3331/` | `nix-shell -A slave --command 'mysql -u reader'` |
 
 This is horrifically insecure by default. It's only for internal/local development.
 
@@ -44,7 +51,7 @@ nix-shell -A slave --command rundb
 nix-shell -A master --command init-repl
 
 ## Copy the "civi" DB from a civibuild site to the master+slave servers
-amp sql:dump -r ~/buildkit/build/dmaster -Ncivi | nix-shell -A master --command 'load-db civi'
+amp sql:dump -r ~/buildkit/build/dmaster -N civi | nix-shell -A master --command 'load-db civi'
 ```
 
 ## More examples
