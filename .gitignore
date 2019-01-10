@@ -2,7 +2,9 @@
 /master/data
 /master/tmp
 /master/log
+/master/run
 /slave/conf/my.cnf
 /slave/data
 /slave/tmp
 /slave/log
+/slave/run

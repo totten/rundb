@@ -3,13 +3,14 @@
 [client]
 #password	= your_password
 port		= 3331
-socket		= %%MYSQL_BASE%%/mysql.sock
+socket		= %%MYSQL_BASE%%/run/mysql.sock
 
 [mysqld]
 port		= 3331
-socket		= %%MYSQL_BASE%%/mysql.sock
-#tmpdir		= /tmp/
 server-id	= 2
+socket		= %%MYSQL_BASE%%/run/mysql.sock
+pid_file        = %%MYSQL_BASE%%/run/mysql.pid
+tmpdir          = %%MYSQL_BASE%%/tmp
 log-bin		= %%MYSQL_BASE%%/log/mysql-bin
 binlog_format	= mixed
 
