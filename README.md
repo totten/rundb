@@ -46,9 +46,9 @@ DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz --comm
 DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysqldump foo'
 ```
 
-The `clean-start` gets you started with one command, but it has several limitations:
+This approach gets you started with one command, but it has several limitations:
 
-* The `nix-shell` command includes a long URL.
+* The `nix-shell` commands are long -- each one reproduces a full Github URL.
 * The `$PWD/master` and `$PWD/slave` folders are reset everytime you start.
 * The log output of both master+slave is combined into one screen.
 * The master and slave nodes start together and stop together.
