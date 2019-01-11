@@ -46,7 +46,7 @@ function cmd_init() {
     echo_step "Create base folder ($MYSQL_BASE)"
     mkdir -p "$MYSQL_BASE" "$MYSQL_BASE/conf" "$MYSQL_BASE/tmp" "$MYSQL_BASE/data" "$MYSQL_BASE/log" "$MYSQL_BASE/run"
     echo_step "Generate my.cnf from template"
-    local COMMON=$(dirname $MYSQL_BASE)/common
+    local COMMON=$(dirname $RUNDBTPL)/common
     cat "$RUNDBTPL/my.cnf" \
       | sed "s;%%MYSQL_BASE%%;$MYSQL_BASE;g" \
       | sed "s;%%COMMON%%;$COMMON;g" \
