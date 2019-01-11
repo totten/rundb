@@ -6,6 +6,7 @@ let
   mkdbms = {dbmsName}: stdenv.mkDerivation rec {
     name = "rundb-${dbmsName}";
     bin = ./bin;
+    templates = ./templates;
     buildInputs = [ pkgs.mariadb pkgs.php72 ];
     buildCommand = ''
     '';
@@ -13,6 +14,7 @@ let
       export PATH="$bin:$PATH"
       export MYSQL_BASE="$PWD/'' + dbmsName + ''"
       export MYSQL_HOME="$MYSQL_BASE/conf"
+      export RUNDBTPL="$templates/'' + dbmsName + ''"
     '';
     };
 

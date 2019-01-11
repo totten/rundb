@@ -74,8 +74,8 @@ This is horrifically insecure by default. It's only for internal/local developme
 
 ## Configuration files
 
-* [master/conf/my.cnf.tmpl](master/conf/my.cnf.tmpl): Configuration file for master DB
-* [slave/conf/my.cnf.tmpl](slave/conf/my.cnf.tmpl): Configuration file for slave DB
+* [templates/master/my.cnf](templates/master/my.cnf): Configuration file for master DB
+* [templates/slave/my.cnf](templates/slave/my.cnf): Configuration file for slave DB
 * [common/conf/my.cnf](common/conf/my.cnf): Configuration elements shared by master and slave DB
 
 ## More example commands
