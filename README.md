@@ -2,12 +2,12 @@
 
 Launch a pair of master-slave MariaDB servers on `localhost`. The data will be stored in `$PWD/master` and `$PWD/slave`.
 
-| Server      | IP           | Port      | Server ID | Storage       |
+| Server Role | IP           | Port      | Server ID | Storage       |
 |-------------|--------------|-----------|-----------|---------------|
-| `master`    | `127.0.0.1`  | `3330`    | `3330`    | `$PWD/master` |
-| `slave`     | `127.0.0.1`  | `3331`    | `3331`    | `$PWD/slave`  |
+| Master      | `127.0.0.1`  | `3330`    | `3330`    | `$PWD/master` |
+| Slave       | `127.0.0.1`  | `3331`    | `3331`    | `$PWD/slave`  |
 
-The servers have two users, `root` (no password) and `reader` (no password).
+Each server has two users, `root` (no password) and `reader` (no password).
 
 This is horrifically insecure by default. It's only for internal/local development.
 
