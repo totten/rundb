@@ -1,4 +1,4 @@
-# rundb: Quick-and-dirty script for running MariaDB master-slave deployment
+# rundb: Quick-and-dirty script for running MariaDB master-slave locally
 
 ## Requirements
 
