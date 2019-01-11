@@ -30,15 +30,15 @@ done
 set -e
 
 echo_step "(Re)Initialize all data files"
-env RUNDB_NAME=master rundb clear init
-env RUNDB_NAME=slave  rundb clear init
+env DB=master rundb clear init
+env DB=slave  rundb clear init
 
 echo_step "Start master"
-env RUNDB_NAME=master rundb run &
+env DB=master rundb run &
 masterPid=$!
 
 echo_step "Start slave"
-env RUNDB_NAME=slave  rundb run &
+env DB=slave  rundb run &
 slavePid=$!
 
 echo_step "Waiting a few seconds for start up..."

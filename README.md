@@ -8,8 +8,7 @@
 ## General Design
 
 * The folders `./master` and `./slave` store all config files and data files for the master and slave instances.
-* The command `nix-shell -A <dbname>` (e.g. `nix-shell -A master` or `nix-shell -A slave`) sets up environment variables and
-  (if necessary) downloads executables for a given database.  Use it run MySQL commands (`mysqldump`, `mysqladmin`, et al).
+* The command `nix-shell` sets up a shell with the necessary executables/scripts. It accepts an environment variable `DB=master` or `DB=slave`. Use it run MySQL commands (`mysqldump`, `mysqladmin`, et al).
 * The `rundb` command is a small wrapper for `mysql_install_db` and `mysqld` which auto-initializes config files and data files.
 
 ## Clean-Start Quick-Start
@@ -20,7 +19,7 @@ bring up the `master` and `slave` as new, empty databases.
 ```
 git clone https://github.com/totten/rundb
 cd rundb
-./scripts/clean-start
+nix-shell --command clean-start
 ```
 
 The `clean-start` is handy for very basic experimentation; however, it is
@@ -41,17 +40,17 @@ git clone https://github.com/totten/rundb
 cd rundb
 
 ## Start master DB. (To shutdown, press Ctrl-\)
-nix-shell -A master --command rundb
+DB=master nix-shell --command rundb
 
 ## Open a new terminal.
 
 ## Start slave DB. (To shutdown, press Ctrl-\)
-nix-shell -A slave --command rundb
+DB=slave nix-shell --command rundb
 
 ## Open a new terminal.
 
 ## Initiate replication between the two empty DBs
-nix-shell -A master --command init-repl
+DB=master nix-shell --command init-repl
 ```
 
 ## Servers
@@ -65,10 +64,10 @@ nix-shell -A master --command init-repl
 
 | User             | DSN | CLI |
 |------------------|-----|-----|
-| Master Root      | `mysql://root:@127.0.0.1:3330/`   | `nix-shell -A master --command mysql` |
-| Master Reader    | `mysql://reader:@127.0.0.1:3330/` | `nix-shell -A master --command 'mysql -u reader'` |
-| Slave Root       | `mysql://root:@127.0.0.1:3331/`   | `nix-shell -A slave --command mysql` |
-| Slave Reader     | `mysql://reader:@127.0.0.1:3331/` | `nix-shell -A slave --command 'mysql -u reader'` |
+| Master Root      | `mysql://root:@127.0.0.1:3330/`   | `DB=master nix-shell --command mysql` |
+| Master Reader    | `mysql://reader:@127.0.0.1:3330/` | `DB=master nix-shell --command 'mysql -u reader'` |
+| Slave Root       | `mysql://root:@127.0.0.1:3331/`   | `DB=slave nix-shell --command mysql` |
+| Slave Reader     | `mysql://reader:@127.0.0.1:3331/` | `DB=slave nix-shell --command 'mysql -u reader'` |
 
 This is horrifically insecure by default. It's only for internal/local development.
 
@@ -84,27 +83,27 @@ Each of these examples can be execued with the master or slave.
 
 ```
 ## Open an interactive bash session
-nix-shell -A master
-nix-shell -A slave
+DB=master nix-shell
+DB=slave nix-shell
 
 ## Open an interactive SQL session
-nix-shell -A master --command mysql
-nix-shell -A slave --command mysql
+DB=master nix-shell --command mysql
+DB=slave nix-shell --command mysql
 
 ## Dump a copy of the 'foo' database
-nix-shell -A master --command 'mysqldump foo'
-nix-shell -A slave --command 'mysqldump foo'
+DB=master nix-shell --command 'mysqldump foo'
+DB=slave nix-shell --command 'mysqldump foo'
 
 ## Destroy all state/data
-nix-shell -A master --command 'rundb clear'
-nix-shell -A slave --command 'rundb clear'
+DB=master nix-shell --command 'rundb clear'
+DB=slave nix-shell --command 'rundb clear'
 
 ## Clear out all master data files. Reinitialize. Run DB in foreground.
 ## To stop, press Ctrl-\
-nix-shell -A master --command 'rundb clear init run'
-nix-shell -A slave --command 'rundb clear init run'
+DB=master nix-shell --command 'rundb clear init run'
+DB=slave nix-shell --command 'rundb clear init run'
 
 ## As above, but use alternate IP+port.
-nix-shell -A master --command 'rundb clear init run --bind-address=192.168.1.10 --port=9999'
-nix-shell -A slave --command 'rundb clear init run --bind-address=192.168.1.10 --port=9999'
+DB=master nix-shell --command 'rundb clear init run --bind-address=192.168.1.10 --port=9999'
+DB=slave nix-shell --command 'rundb clear init run --bind-address=192.168.1.10 --port=9999'
 ```
