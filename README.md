@@ -13,28 +13,42 @@
 
 ## Clean-Start Quick-Start
 
-The quickest way to get going is to use `clean-start`, which will always
-bring up the `master` and `slave` as new, empty databases.
+The quickest way to get going is to use `clean-start`.  With one command, this will start an empty `master` and `slave`
+DB with synchronization active.  Any data will be (over)written in `$PWD/master` and `$PWD/slave`.  Usage:
 
-```
-git clone https://github.com/totten/rundb
-cd rundb
-nix-shell --command clean-start
+```bash
+nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command clean-start
 ```
 
-The `clean-start` is handy for very basic experimentation; however, it is
-not gentle or nuanced:
+To run commands like `mysql` or `mysqldump` on the `master` or `slave`, use this notation:
 
-* If you have data from a previous run, it will be destroyed.
-* If you try to call `clean-start` twice (concurrently), the second will the kill first.
+```bash
+## Start an interactive bash shell
+DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz
+DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz
+
+## Start an interactive SQL shell
+DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command mysql
+DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command mysql
+
+## Dump a database
+DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysqldump somedb'
+DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysqldump somedb'
+```
+
+The `clean-start` gets you started with one command, but it has several limitations:
+
+* You have to put a long URL when calling `nix-shell`.
+* The `$PWD/master` and `$PWD/slave` data are reset everytime you start.
 * The log output of both master+slave is combined into one screen.
 * The master and slave nodes start together and stop together.
+* You can't edit the `my.cnf` templates.
 
 For a less heavy-handed approach, use the standard quick start.
 
 ## Standard Quick Start
 
-```
+```bash
 ## Download rundb scripts.
 git clone https://github.com/totten/rundb
 cd rundb
@@ -81,7 +95,7 @@ This is horrifically insecure by default. It's only for internal/local developme
 
 Each of these examples can be execued with the master or slave.
 
-```
+```bash
 ## Open an interactive bash session
 DB=master nix-shell
 DB=slave nix-shell
