@@ -19,11 +19,6 @@ if [ -z "$(which nix-shell)" ]; then
   exit 1
 fi
 
-if [ ! -f master/conf/my.cnf.tmpl ]; then
-  echo_error "Please execute this from the rundb folder."
-  exit 1
-fi
-
 for pidFile in {master,slave}/run/mysql.pid ; do
   if [ -f "$pidFile" ]; then
     echo_step "Ensure that mysqld ($pidFile) is stopped"
@@ -35,22 +30,22 @@ done
 set -e
 
 echo_step "(Re)Initialize all data files"
-nix-shell -A master --command 'rundb clear init'
-nix-shell -A slave --command 'rundb clear init'
+env RUNDB_NAME=master rundb clear init
+env RUNDB_NAME=slave  rundb clear init
 
 echo_step "Start master"
-nix-shell -A master --command 'rundb run' &
+env RUNDB_NAME=master rundb run &
 masterPid=$!
 
 echo_step "Start slave"
-nix-shell -A slave --command 'rundb run' &
+env RUNDB_NAME=slave  rundb run &
 slavePid=$!
 
 echo_step "Waiting a few seconds for start up..."
 sleep 3
 
 echo_step "Initializing replication..."
-nix-shell -A slave --command init-repl
+init-repl
 
 echo_step "mysqld is running. To shutdown, press Ctrl-\\"
 wait $masterPid

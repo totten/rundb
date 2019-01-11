@@ -12,9 +12,10 @@ let
     '';
     shellHook = ''
       export PATH="$bin:$PATH"
-      export MYSQL_BASE="$PWD/'' + dbmsName + ''"
-      export MYSQL_HOME="$MYSQL_BASE/conf"
-      export RUNDBTPL="$templates/'' + dbmsName + ''"
+      export MYSQL_BASES="$PWD"
+      export MYSQL_HOME="$MYSQL_BASES/'' + dbmsName + ''/conf"
+      export RUNDB_NAME="'' + dbmsName + ''"
+      export RUNDB_TPL="$templates"
     '';
     };
 

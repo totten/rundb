@@ -46,10 +46,11 @@ function cmd_init() {
     echo_step "Create base folder ($MYSQL_BASE)"
     mkdir -p "$MYSQL_BASE" "$MYSQL_BASE/conf" "$MYSQL_BASE/tmp" "$MYSQL_BASE/data" "$MYSQL_BASE/log" "$MYSQL_BASE/run"
     echo_step "Generate my.cnf from template"
-    local COMMON=$(dirname $RUNDBTPL)/common
-    cat "$RUNDBTPL/my.cnf" \
+    cat "$RUNDB_TPL/$RUNDB_NAME/my.cnf" \
+      | sed "s;%%MYSQL_BASES%%;$MYSQL_BASES;g" \
       | sed "s;%%MYSQL_BASE%%;$MYSQL_BASE;g" \
-      | sed "s;%%COMMON%%;$COMMON;g" \
+      | sed "s;%%RUNDB_NAME%%;$RUNDB_NAME;g" \
+      | sed "s;%%RUNDB_TPL%%;$RUNDB_TPL;g" \
       > "$MYSQL_BASE/conf/my.cnf"
     if [ ! -f "$MYSQL_BASE/data/ibdata1" ]; then
       echo_step "Initialize data files"
@@ -96,13 +97,18 @@ function main() {
 #################################################
 ## Main
 
-if [ -z "$MYSQL_BASE" ]; then
-  echo_error "MYSQL_BASE has not been set"
+if [ -z "$MYSQL_BASES" ]; then
+  echo_error "MYSQL_BASES has not been set"
   exit 1
 fi
-if [ -z "$RUNDBTPL" ]; then
-  echo_error "RUNDBTPL has not been set"
+if [ -z "$RUNDB_TPL" ]; then
+  echo_error "RUNDB_TPL has not been set"
   exit 1
 fi
+if [ -z "$RUNDB_NAME" ]; then
+  echo_error "RUNDB_NAME has no tbeen set"
+  exit 1
+fi
+export MYSQL_BASE="$MYSQL_BASES/$RUNDB_NAME"
 export MYSQL_HOME="$MYSQL_BASE/conf"
 main "$@"
