@@ -1,17 +1,22 @@
 # rundb: Quick-and-dirty local dev w/MariaDB master-slave
 
+Launch a pair of master-slave MariaDB servers on `localhost`. The data will be stored in `$PWD/master` and `$PWD/slave`.
+
+| Server      | IP           | Port      | Server ID | Storage       |
+|-------------|--------------|-----------|-----------|---------------|
+| `master`    | `127.0.0.1`  | `3330`    | `3330`    | `$PWD/master` |
+| `slave`     | `127.0.0.1`  | `3331`    | `3331`    | `$PWD/slave`  |
+
+The servers have two users, `root` (no password) and `reader` (no password).
+
+This is horrifically insecure by default. It's only for internal/local development.
+
 ## Requirements
 
-* Run Linux or OS X on the local workstation
+* Use Linux or OS X on the local workstation
 * Install the [nix package manager](https://nixos.org/nix/)
 
-## General Design
-
-* The folders `./master` and `./slave` store all config files and data files for the master and slave instances.
-* The command `nix-shell` sets up a shell with the necessary executables/scripts. It accepts an environment variable `DB=master` or `DB=slave`. Use it run MySQL commands (`mysqldump`, `mysqladmin`, et al).
-* The `rundb` command is a small wrapper for `mysql_install_db` and `mysqld` which auto-initializes config files and data files.
-
-## Clean-Start Quick-Start
+## Clean-Start Quick Start
 
 The quickest way to get going is to use `clean-start`.  With one command, this will start an empty `master` and `slave`
 DB with synchronization active.  Any data will be (over)written in `$PWD/master` and `$PWD/slave`.  Usage:
@@ -20,26 +25,31 @@ DB with synchronization active.  Any data will be (over)written in `$PWD/master`
 nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command clean-start
 ```
 
-To run commands like `mysql` or `mysqldump` on the `master` or `slave`, use this notation:
+You can additionally use CLI tools with these databases; however, the
+commands should be called with `nix-shell`, like in these examples:
 
 ```bash
-## Start an interactive bash shell
+## Open an interactive bash shell
 DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz
 DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz
 
-## Start an interactive SQL shell
+## Open an interactive SQL shell (as root)
 DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command mysql
 DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command mysql
 
-## Dump a database
-DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysqldump somedb'
-DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysqldump somedb'
+## Open an interactive SQL shell (as reader)
+DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysql -u reader'
+DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysql -u reader'
+
+## Dump a copy of the 'foo' database
+DB=master nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysqldump foo'
+DB=slave nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'mysqldump foo'
 ```
 
 The `clean-start` gets you started with one command, but it has several limitations:
 
-* You have to put a long URL when calling `nix-shell`.
-* The `$PWD/master` and `$PWD/slave` data are reset everytime you start.
+* The `nix-shell` command includes a long URL.
+* The `$PWD/master` and `$PWD/slave` folders are reset everytime you start.
 * The log output of both master+slave is combined into one screen.
 * The master and slave nodes start together and stop together.
 * You can't edit the `my.cnf` templates.
@@ -67,29 +77,13 @@ DB=slave nix-shell --command rundb
 DB=master nix-shell --command init-repl
 ```
 
-## Servers
-
-| Instance    | IP           | Port      | Server ID |
-|-------------|--------------|-----------|-----------|
-| `master`    | `127.0.0.1`  | `3330`    | `3330`    |
-| `slave`     | `127.0.0.1`  | `3331`    | `3331`    |
-
-## Users
-
-| User             | DSN | CLI |
-|------------------|-----|-----|
-| Master Root      | `mysql://root:@127.0.0.1:3330/`   | `DB=master nix-shell --command mysql` |
-| Master Reader    | `mysql://reader:@127.0.0.1:3330/` | `DB=master nix-shell --command 'mysql -u reader'` |
-| Slave Root       | `mysql://root:@127.0.0.1:3331/`   | `DB=slave nix-shell --command mysql` |
-| Slave Reader     | `mysql://reader:@127.0.0.1:3331/` | `DB=slave nix-shell --command 'mysql -u reader'` |
-
-This is horrifically insecure by default. It's only for internal/local development.
-
 ## Configuration files
 
+The configuration files are generated from templates whenever you call `rundb`. The key files are:
+
+* [templates/common/my.cnf](templates/common/my.cnf): Configuration elements shared by master and slave DB
 * [templates/master/my.cnf](templates/master/my.cnf): Configuration file for master DB
 * [templates/slave/my.cnf](templates/slave/my.cnf): Configuration file for slave DB
-* [common/conf/my.cnf](common/conf/my.cnf): Configuration elements shared by master and slave DB
 
 ## More example commands
 
@@ -100,9 +94,13 @@ Each of these examples can be execued with the master or slave.
 DB=master nix-shell
 DB=slave nix-shell
 
-## Open an interactive SQL session
+## Open an interactive SQL session (as root)
 DB=master nix-shell --command mysql
 DB=slave nix-shell --command mysql
+
+## Open an interactive SQL session (as reader)
+DB=master nix-shell --command 'mysql -u reader'
+DB=slave nix-shell --command 'mysql -u reader'
 
 ## Dump a copy of the 'foo' database
 DB=master nix-shell --command 'mysqldump foo'
