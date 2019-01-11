@@ -36,12 +36,10 @@ function cmd_help() {
 }
 
 function cmd_clear() {
-  for ITEM in data log tmp run conf/my.cnf ; do
-    if [ -e "$MYSQL_BASE/$ITEM" ]; then
-      echo_step "Remove $MYSQL_BASE/$ITEM"
-      rm -rf "$MYSQL_BASE/$ITEM"
-    fi
-  done
+  if [ -d "$MYSQL_BASE" ]; then
+    echo_step "Remove $MYSQL_BASE"
+    rm -rf "$MYSQL_BASE"
+  fi
 }
 
 function cmd_init() {
