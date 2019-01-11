@@ -15,15 +15,19 @@
 ## Quick Start
 
 ```
-## Download rundb scripts
+## Download rundb scripts.
 git clone https://github.com/totten/rundb
 cd rundb
 
 ## Start master DB. (To shutdown, press Ctrl-\)
 nix-shell -A master --command rundb
 
+## Open a new terminal.
+
 ## Start slave DB. (To shutdown, press Ctrl-\)
 nix-shell -A slave --command rundb
+
+## Open a new terminal.
 
 ## Initiate replication between the two empty DBs
 nix-shell -A master --command init-repl
