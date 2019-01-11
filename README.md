@@ -1,4 +1,4 @@
-# rundb: Quick-and-dirty script for running MariaDB master-slave locally
+# rundb: Quick-and-dirty local dev w/MariaDB master-slave
 
 ## Requirements
 
@@ -12,7 +12,28 @@
   (if necessary) downloads executables for a given database.  Use it run MySQL commands (`mysqldump`, `mysqladmin`, et al).
 * The `rundb` command is a small wrapper for `mysql_install_db` and `mysqld` which auto-initializes config files and data files.
 
-## Quick Start
+## Clean-Start Quick-Start
+
+The quickest way to get going is to use `clean-start`, which will always
+bring up the `master` and `slave` as new, empty databases.
+
+```
+git clone https://github.com/totten/rundb
+cd rundb
+./scripts/clean-start
+```
+
+The `clean-start` is handy for very basic experimentation; however, it is
+not gentle or nuanced:
+
+* If you have data from a previous run, it will be destroyed.
+* If you try to call `clean-start` twice (concurrently), the second will the kill first.
+* The log output of both master+slave is combined into one screen.
+* The master and slave nodes start together and stop together.
+
+For a less heavy-handed approach, use the standard quick start.
+
+## Standard Quick Start
 
 ```
 ## Download rundb scripts.

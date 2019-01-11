@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#################################################
+
+function echo_step() {
+  echo "[[[ $@ ]]]"
+}
+
+function echo_error() {
+  echo "Error: $@" >&2
+}
+
+#################################################
+
+if [ -z "$(which nix-shell)" ]; then
+  echo_error "Please install nix package manager: https://nixos.org/nix/"
+  exit 1
+fi
+
+if [ ! -f master/conf/my.cnf.tmpl ]; then
+  echo_error "Please execute this from the rundb folder."
+  exit 1
+fi
+
+for pidFile in {master,slave}/run/mysql.pid ; do
+  if [ -f "$pidFile" ]; then
+    echo_step "Ensure that mysqld ($pidFile) is stopped"
+    kill $(cat "$pidFile")
+    sleep 2
+  fi
+done
+
+set -e
+
+echo_step "(Re)Initialize all data files"
+nix-shell -A master --command 'rundb clear init'
+nix-shell -A slave --command 'rundb clear init'
+
+echo_step "Start master"
+nix-shell -A master --command 'rundb run' &
+masterPid=$!
+
+echo_step "Start slave"
+nix-shell -A slave --command 'rundb run' &
+slavePid=$!
+
+echo "Waiting a few seconds for start up..."
+sleep 3
+
+echo "Initializing replication..."
+nix-shell -A slave --command init-repl
+
+echo "mysqld is running. To shutdown, press Ctrl-\\"
+wait $masterPid
+wait $slavePid
