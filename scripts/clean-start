@@ -3,7 +3,9 @@
 #################################################
 
 function echo_step() {
+  echo
   echo "[[[ $@ ]]]"
+  echo
 }
 
 function echo_error() {
@@ -44,12 +46,12 @@ echo_step "Start slave"
 nix-shell -A slave --command 'rundb run' &
 slavePid=$!
 
-echo "Waiting a few seconds for start up..."
+echo_step "Waiting a few seconds for start up..."
 sleep 3
 
-echo "Initializing replication..."
+echo_step "Initializing replication..."
 nix-shell -A slave --command init-repl
 
-echo "mysqld is running. To shutdown, press Ctrl-\\"
+echo_step "mysqld is running. To shutdown, press Ctrl-\\"
 wait $masterPid
 wait $slavePid
