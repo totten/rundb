@@ -27,9 +27,6 @@ nix-shell -A slave --command rundb
 
 ## Initiate replication between the two empty DBs
 nix-shell -A master --command init-repl
-
-## Copy the "civi" DB from a civibuild site to the master+slave servers
-amp sql:dump -r ~/buildkit/build/dmaster -N civi | nix-shell -A master --command 'load-db civi'
 ```
 
 ## Servers
