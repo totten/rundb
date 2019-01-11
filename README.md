@@ -15,6 +15,7 @@ This is horrifically insecure by default. It's only for internal/local developme
 
 * Use Linux or OS X on the local workstation
 * Install the [nix package manager](https://nixos.org/nix/)
+    * tldr: Run "`curl https://nixos.org/nix/install | sh`" as your regular workstation user.
 
 ## Clean-Start Quick Start
 
