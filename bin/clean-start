@@ -14,11 +14,6 @@ function echo_error() {
 
 #################################################
 
-if [ -z "$(which nix-shell)" ]; then
-  echo_error "Please install nix package manager: https://nixos.org/nix/"
-  exit 1
-fi
-
 for pidFile in {master,slave}/run/mysql.pid ; do
   if [ -f "$pidFile" ]; then
     echo_step "Ensure that mysqld ($pidFile) is stopped"
