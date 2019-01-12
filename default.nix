@@ -8,7 +8,7 @@ in
     name = "rundb";
     bin = ./bin;
     templates = ./templates;
-    buildInputs = [ pkgs.mariadb pkgs.php72 ];
+    buildInputs = [ pkgs.mariadb pkgs.php72 pkgs.which ];
     buildCommand = ''
     '';
     shellHook = ''
